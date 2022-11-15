@@ -67,6 +67,7 @@ public class genGatlingTests {
             properties.clear();
             pathParmeters.clear();
         }
+        printWriter.close();
     }
 
     private static void printOperations(Swagger swagger, Map<HttpMethod, Operation> operationMap) {
