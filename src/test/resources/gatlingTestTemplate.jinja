@@ -1,0 +1,14 @@
+private ScenarioBuilder {{OperationID}} = scenario("{{OperationID}}").exec(
+    http("Do operation for {{OperationID}}")
+            .{{method}}("{{path}}")
+            .header("content-type","application/json")
+            .asJson()
+            {% if properties %}
+              .body(StringBody("{\n" +
+                 {% for key, value in properties.items() %}
+                    \"{{key}}\": \"{{value}}\",\n" +
+                 {% endfor %}
+              "}")).asJson()
+            {% endif %}
+            .check(status().is(200),jsonPath("$.name").is("qaautomationhub"))).pause(1);
+
