@@ -28,7 +28,16 @@ public class genGatlingTests {
     static String fileName = "src/test/resources/gatlingTestTemplate.jinja";
     static String template;
     static File gatTests = new File("gatlinTests");
-    static FileWriter fileWriter = new FileWriter(gatTests);
+    static FileWriter fileWriter;
+
+    static {
+        try {
+            fileWriter = new FileWriter(gatTests);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static PrintWriter printWriter = new PrintWriter(fileWriter);
 
 
