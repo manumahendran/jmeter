@@ -12,7 +12,10 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.refs.RefFormat;
 import io.swagger.parser.SwaggerParser;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -24,6 +27,10 @@ public class genGatlingTests {
 
     static String fileName = "src/test/resources/gatlingTestTemplate.jinja";
     static String template;
+    static File gatTests = new File("gatlinTests");
+    FileWriter fileWriter = new FileWriter(gatTests);
+    static PrintWriter printWriter = new PrintWriter(fileWriter);
+
 
     static {
         try {
@@ -38,16 +45,15 @@ public class genGatlingTests {
 
     public static void main(String[] args) throws IOException {
         Jinjava jinjava = new Jinjava();
-//        parameters.put("id","123");
-
         Swagger swagger = new SwaggerParser().read("src/test/resources/swaggerDocs/swagger.json");
 
         for(Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
             System.out.println("===Path====\n"+entry.getKey());
             context.put("path",entry.getKey());
             printOperations(swagger, entry.getValue().getOperationMap());
-            String renderedTemplate = jinjava.render(template, context);
-            System.out.println(renderedTemplate);
+            String generatedTests = jinjava.render(template, context);
+            printWriter.print(generatedTests);
+
             context.clear();
             properties.clear();
             pathParmeters.clear();
