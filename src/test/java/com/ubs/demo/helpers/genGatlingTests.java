@@ -27,28 +27,19 @@ public class genGatlingTests {
 
     static String fileName = "src/test/resources/gatlingTestTemplate.jinja";
     static String template;
-    static File gatTests = new File("gatlinTests");
+    static File gatTests = new File("gatlingTests.java");
     static FileWriter fileWriter;
 
     static {
         try {
             fileWriter = new FileWriter(gatTests);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static PrintWriter printWriter = new PrintWriter(fileWriter);
-
-
-    static {
-        try {
             template = Files.readString(Paths.get(fileName));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    static PrintWriter printWriter = new PrintWriter(fileWriter);
     public genGatlingTests() throws IOException {
     }
 

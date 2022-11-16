@@ -1,14 +1,47 @@
-private ScenarioBuilder {{OperationID}} = scenario("{{OperationID}}").exec(
-    http("Do operation for {{OperationID}}")
-            .{{method}}("{{path}}")
-            .header("content-type","application/json")
-            .asJson()
-            {% if properties %}
-              .body(StringBody("{\n" +
-                 {% for key, value in properties.items() %}
-                    \"{{key}}\": \"{{value}}\",\n" +
-                 {% endfor %}
-              "}")).asJson()
-            {% endif %}
-            .check(status().is(200),jsonPath("$.name").is("qaautomationhub"))).pause(1);
+import io.gatling.javaapi.core.ScenarioBuilder;
+import io.gatling.javaapi.core.Simulation;
+import io.gatling.javaapi.http.HttpProtocolBuilder;
 
+import static io.gatling.javaapi.core.CoreDsl.*;
+import static io.gatling.javaapi.http.HttpDsl.http;
+import static io.gatling.javaapi.http.HttpDsl.status;
+
+public class apiTest extends Simulation{
+
+   private HttpProtocolBuilder httpProtocol = http.baseUrl("https://<add the end point here>/"); //Update the end point URL here
+    private ScenarioBuilder {{OperationID}} = scenario("{{OperationID}}").exec(
+        http("Do operation for {{OperationID}}")
+                .{{method}}("{{path}}")
+                .header("content-type","application/json")
+                .asJson()
+                {% if properties %}
+                  .body(StringBody("{\n" +
+                     {% for key, value in properties.items() %}
+                     "   \"{{key}}\": \"{{value}}\",\n" +
+                     {% endfor %}
+                  "}")).asJson()
+                {% endif %}
+                .check(status().is(200),jsonPath("$.name").is("qaautomationhub"))).pause(1);
+    {
+        setUp({{OperationID}}.injectOpen(rampUsers(5).during(5))).protocols(httpProtocol);
+    }
+}
+
+/* Add the following dependency to Maven
+<dependency>
+			<groupId>io.gatling</groupId>
+			<artifactId>gatling-core-java</artifactId>
+			<version>3.8.4</version>
+		</dependency>
+
+Add the following plugin to pom.xml
+<plugin>
+				<groupId>io.gatling</groupId>
+				<artifactId>gatling-maven-plugin</artifactId>
+				<version>4.2.7</version>
+				<configuration>
+					<!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/maven_plugin/#working-with-gatling-enterprise-cloud -->
+					<!-- Enterprise Self-Hosted configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/maven_plugin/#working-with-gatling-enterprise-self-hosted -->
+				</configuration>
+			</plugin>
+*/
