@@ -1,4 +1,4 @@
-package com.ubs.demo.helpers;
+package com.ubs.demo.gatling;
 
 import com.google.common.collect.Maps;
 import com.hubspot.jinjava.Jinjava;
@@ -20,51 +20,58 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-public class genGatlingTests {
+public class generateGatlingTests {
     static Map<String, Object> context = Maps.newHashMap();
+
     static Map<String, String> properties = Maps.newHashMap();
     static Map<String, String> pathParmeters = Maps.newHashMap();
 
     static String fileName = "src/test/resources/gatlingTestTemplate.jinja";
     static String template;
-    static File gatTests = new File("gatlingTests.java");
+    static File gatTests = new File("");
     static FileWriter fileWriter;
 
     static {
         try {
-            fileWriter = new FileWriter(gatTests);
             template = Files.readString(Paths.get(fileName));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    static PrintWriter printWriter = new PrintWriter(fileWriter);
-    public genGatlingTests() throws IOException {
+    static Jinjava jinjava = new Jinjava();
+
+
+    public generateGatlingTests() throws IOException {
+
     }
 
     public static void main(String[] args) throws IOException {
-        Jinjava jinjava = new Jinjava();
         Swagger swagger = new SwaggerParser().read("src/test/resources/swaggerDocs/swagger.json");
+
 
         for(Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
             System.out.println("===Path====\n"+entry.getKey());
+            context.put("package","com.ubs.demo.perfTests;");
             context.put("path",entry.getKey());
             printOperations(swagger, entry.getValue().getOperationMap());
-            String generatedTests = jinjava.render(template, context);
-            printWriter.print(generatedTests);
+
 
             context.clear();
             properties.clear();
             pathParmeters.clear();
         }
-        printWriter.close();
     }
 
-    private static void printOperations(Swagger swagger, Map<HttpMethod, Operation> operationMap) {
+    private static void printOperations(Swagger swagger, Map<HttpMethod, Operation> operationMap) throws IOException {
         for(Map.Entry<HttpMethod, Operation> op : operationMap.entrySet()) {
-            context.put("method",op.getKey());
+            context.put("method",op.getKey().toString());
             context.put("OperationID", op.getValue().getOperationId());
+            gatTests = new File("src/test/java/com/ubs/demo/perfTests/"+op.getValue().getOperationId()+".java");
+
+            fileWriter = new FileWriter(gatTests);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
             System.out.println(op.getKey() + " - " + op.getValue().getOperationId());
             System.out.println("Parameters:");
             for(Parameter p : op.getValue().getParameters()) {
@@ -83,6 +90,9 @@ public class genGatlingTests {
             System.out.println();
             printResponses(swagger, op.getValue().getResponses());
             System.out.println();
+
+            printWriter.print(jinjava.render(template, context));
+            printWriter.close();
         }
     }
 

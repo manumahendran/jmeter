@@ -1,3 +1,5 @@
+package {{package}}
+
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
@@ -6,12 +8,12 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
-public class apiTest extends Simulation{
+public class {{OperationID}} extends Simulation{
 
    private HttpProtocolBuilder httpProtocol = http.baseUrl("https://<add the end point here>/"); //Update the end point URL here
     private ScenarioBuilder {{OperationID}} = scenario("{{OperationID}}").exec(
         http("Do operation for {{OperationID}}")
-                .{{method}}("{{path}}")
+                .{{method | lower}}("{{path}}")
                 .header("content-type","application/json")
                 .asJson()
                 {% if properties %}

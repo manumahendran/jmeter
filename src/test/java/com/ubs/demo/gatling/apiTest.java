@@ -1,4 +1,5 @@
-package com.ubs.demo.perfTests;
+package com.ubs.demo.gatling;
+
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
@@ -17,18 +18,19 @@ public class apiTest extends Simulation{
             http("Create a new User")
                     .post("/users").header("content-type","application/json")
                     .asJson()
-                    .body(RawFileBody("Data/user.json"))
-//                    .body(StringBody("{\n" +
-//                            "    \"name\": \"morpheus\",\n" +
-//                            "    \"job\": \"leader\"\n" +
-//                            "}")).asJson()
+                    .body(StringBody("{\n" +
+                            "    \"name\": \"QaAutomationHub\",\n" +
+                            "    \"job\": \"leader\"\n" +
+                            "}")).asJson()
                     .check(status().is(201),jsonPath("$.name").is("qaautomationhub"))).pause(1);
-
 
 
     {
         setUp(
                 Createusers.injectOpen(rampUsers(5).during(5))).protocols(httpProtocol);
+
+
     }
+
 }
 

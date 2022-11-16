@@ -1,4 +1,4 @@
-package com.ubs.demo.helpers;
+package com.ubs.demo.testers;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;

@@ -1,4 +1,4 @@
-package com.ubs.demo.helpers;
+package com.ubs.demo.testers;
 import io.swagger.models.*;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
