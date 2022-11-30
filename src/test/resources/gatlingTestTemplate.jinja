@@ -10,7 +10,7 @@ import static io.gatling.javaapi.http.HttpDsl.status;
 
 public class {{OperationID}} extends Simulation{
 
-   private HttpProtocolBuilder httpProtocol = http.baseUrl("https://<add the end point here>/"); //Update the end point URL here
+   private HttpProtocolBuilder httpProtocol = http.baseUrl("{{apiURL}}"); //Update the end point URL here
     private ScenarioBuilder {{OperationID}} = scenario("{{OperationID}}").exec(
         http("Do operation for {{OperationID}}")
                 .{{method | lower}}("{{path}}")
@@ -23,7 +23,7 @@ public class {{OperationID}} extends Simulation{
                      {% endfor %}
                   "}")).asJson()
                 {% endif %}
-                .check(status().is(200),jsonPath("$.name").is("qaautomationhub"))).pause(1);
+                .check(status().is(200))).pause(1);
     {
         setUp({{OperationID}}.injectOpen(rampUsers(5).during(5))).protocols(httpProtocol);
     }

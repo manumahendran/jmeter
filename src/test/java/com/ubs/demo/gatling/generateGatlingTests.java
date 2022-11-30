@@ -28,6 +28,7 @@ public class generateGatlingTests {
 
     static String fileName = "src/test/resources/gatlingTestTemplate.jinja";
     static String template;
+    static String operationID="";
     static File gatTests = new File("");
     static FileWriter fileWriter;
 
@@ -42,20 +43,17 @@ public class generateGatlingTests {
     static Jinjava jinjava = new Jinjava();
 
 
-    public generateGatlingTests() throws IOException {
-
-    }
-
-    public static void main(String[] args) throws IOException {
-        Swagger swagger = new SwaggerParser().read("src/test/resources/swaggerDocs/swagger.json");
+    public static void generateGatlingTests(String swaggerLocation) throws IOException {
+//        Swagger swagger = new SwaggerParser().read("src/test/resources/swaggerDocs/swagger.json");
+        Swagger swagger = new SwaggerParser().read(swaggerLocation);
 
 
         for(Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
             System.out.println("===Path====\n"+entry.getKey());
+            context.put("apiURL","http://localhost:8085/");
             context.put("package","com.ubs.demo.perfTests;");
             context.put("path",entry.getKey());
             printOperations(swagger, entry.getValue().getOperationMap());
-
 
             context.clear();
             properties.clear();
@@ -66,8 +64,9 @@ public class generateGatlingTests {
     private static void printOperations(Swagger swagger, Map<HttpMethod, Operation> operationMap) throws IOException {
         for(Map.Entry<HttpMethod, Operation> op : operationMap.entrySet()) {
             context.put("method",op.getKey().toString());
-            context.put("OperationID", op.getValue().getOperationId());
-            gatTests = new File("src/test/java/com/ubs/demo/perfTests/"+op.getValue().getOperationId()+".java");
+            operationID=op.getValue().getOperationId().replaceAll("[^a-zA-Z0-9]", "");
+            context.put("OperationID", operationID);
+            gatTests = new File("src/test/java/com/ubs/demo/perfTests/"+operationID+".java");
 
             fileWriter = new FileWriter(gatTests);
             PrintWriter printWriter = new PrintWriter(fileWriter);

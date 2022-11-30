@@ -5,7 +5,7 @@ import io.gatling.core.config.GatlingPropertiesBuilder;
 
 public class Engine {
 
-  public static void main(String[] args) {
+  public static void runTests() {
     GatlingPropertiesBuilder props = new GatlingPropertiesBuilder()
       .resourcesDirectory(IDEPathHelper.mavenResourcesDirectory.toString())
       .resultsDirectory(IDEPathHelper.resultsDirectory.toString())

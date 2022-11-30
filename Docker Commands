@@ -1,0 +1,10 @@
+#Create a docker image for the api
+docker build --build-arg JAR_FILE=target/*.jar -t myorg/myapp .
+#docker build -t myorg/myapp .
+docker run -p 8080:8080 myorg/myapp
+
+#f you have a running container and you want to peek into it, you can do so by running
+#docker run -ti --entrypoint /bin/sh myorg/myapp // getinto the app
+# docker run --name myapp -ti --entrypoint /bin/sh myorg/myapp
+  #docker exec -ti myapp /bin/sh
+  #/ #
